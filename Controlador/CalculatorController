@@ -1,0 +1,86 @@
+import Modelo.Operacion;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
+
+/**
+ * FXML Controller class
+ *
+ * @author JKur
+ */
+public class CalculatorController implements Initializable {
+
+    @FXML
+    private RadioButton rbSuma;
+    @FXML
+    private RadioButton rbResta;
+    @FXML
+    private RadioButton rbMulti;
+    @FXML
+    private RadioButton rbDiv;
+    @FXML
+    private Button btnAccion;
+    @FXML
+    private TextField tfNum2;
+    @FXML
+    private TextField tfNum1;
+    @FXML
+    private TextField tfResult;
+
+    private ToggleGroup gOperaciones;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        gOperaciones = new ToggleGroup();
+        rbSuma.setToggleGroup(gOperaciones);
+        rbResta.setToggleGroup(gOperaciones);
+        rbMulti.setToggleGroup(gOperaciones);
+        rbDiv.setToggleGroup(gOperaciones);
+    }
+
+    @FXML
+    private void operacion(MouseEvent event) {
+        try {
+            int num1 = Integer.parseInt(tfNum1.getText());
+            int num2 = Integer.parseInt(tfNum2.getText());
+
+            Operacion op = new Operacion(num1, num2);
+            String resulTexto;
+
+            if (rbSuma.isSelected()) {
+                resulTexto = String.valueOf(op.suma());
+            } else if (rbResta.isSelected()) {
+                resulTexto = String.valueOf(op.resta());
+            } else if (rbMulti.isSelected()) {
+                resulTexto = String.valueOf(op.multiplicar());
+            } else if (rbDiv.isSelected()) {
+                if (num2 == 0) {
+                    resulTexto = "ERROR: Dic por cero";
+                } else {
+                    resulTexto = String.valueOf(op.dividir());
+                }
+            } else {
+                resulTexto = "Selecciona una operacion";
+            }
+
+            tfResult.setText(resulTexto);
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setTitle("Error");
+            alert.setContentText("El operando 2 no puede ser 0");
+            alert.showAndWait();
+        }
+    }
+
+}
